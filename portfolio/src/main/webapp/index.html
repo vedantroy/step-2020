@@ -1,18 +1,38 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <title>My Portfolio</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <meta charset="UTF-8" />
+    <title>Vedant Portfolio</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <template>
+      <div class="row">
+        <div class="row-item">
+          <p id="project-description" class="project-description">
+            An interactive programming tutorial site. Solve animated puzzles by
+            executing code in the browser.
+          </p>
+        </div>
+        <div class="row-item">
+          <img
+            id="project-image"
+            class="project-image"
+            src="/images/puzzled.png"
+          />
+        </div>
+        <div class="row-item button-container">
+          <a id="link" target="_blank" class="button">Check it out!</a>
+        </div>
+      </div>
+    </template>
     <div id="content">
       <h1>My Portfolio</h1>
-      <p>This is my portfolio.</p>
-      <p>Click here to get a random message:</p>
-      <button onclick="addRandomGreeting()">Hello</button>
-      <div id="greeting-container"></div>
+      <p>
+        I'm Ved. I like making stuff! Scroll down to see some things I've made.
+      </p>
+      <div></div>
     </div>
+    <script src="script.js"></script>
   </body>
 </html>
