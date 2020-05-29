@@ -59,3 +59,10 @@ content.appendChild(
       "https://vedantroy.github.io/",
   })
 );
+
+
+fetch('/data')
+  .then(resp => resp.json())
+  .then(text => {
+    document.body.append(text)
+  })
