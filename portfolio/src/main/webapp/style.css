@@ -69,14 +69,21 @@ p {
   height: 100%;
 }
 
-.button-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
+.button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.button-grid-child {
-  grid-area: 3 / 2 / 4 / 5;
+.button {
+  margin: auto;
+  cursor: pointer;
+  background: var(--oc-teal-6);
+  color: white;
+  font-size: 14px;
+  text-transform: uppercase;
+  padding: 16px 32px;
+  text-align: center;
+  justify-content: center;
+  border-radius: 2px;
 }

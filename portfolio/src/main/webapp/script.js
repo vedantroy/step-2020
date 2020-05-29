@@ -12,17 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
-
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+function createRow({ description, imageSrc, link }) {
+  const template = document.getElementsByTagName("template")[0];
+  const clone = template.content.cloneNode(true);
+  clone.getElementById("project-description").textContent = description;
+  clone.getElementById("project-image").src = imageSrc;
+  clone.getElementById("link").href = link;
+  return clone;
 }
+
+const content = document.getElementById("content");
+content.appendChild(
+  createRow({
+    description:
+      "Interactive programming tutorial site where users can solve animated puzzles with Javascript.",
+    imageSrc: "/images/puzzled.png",
+    link: "https://programmingforthepuzzled.github.io/puzzled/",
+  })
+);
+
+content.appendChild(
+createRow({
+  description:
+    "Interactive programming tutorial site where users can solve animated puzzles with Javascript.",
+  imageSrc: "/images/puzzled.png",
+  link: "https://programmingforthepuzzled.github.io/puzzled/",
+})
+)

@@ -4,30 +4,35 @@
     <meta charset="UTF-8" />
     <title>Vedant Portfolio</title>
     <link rel="stylesheet" href="style.css" />
-    <script src="script.js"></script>
   </head>
   <body>
+    <template>
+      <div class="row">
+        <div class="row-item">
+          <p id="project-description" class="project-description">
+            An interactive programming tutorial site. Solve animated puzzles by
+            executing code in the browser.
+          </p>
+        </div>
+        <div class="row-item">
+          <img
+            id="project-image"
+            class="project-image"
+            src="/images/puzzled.png"
+          />
+        </div>
+        <div class="row-item button-container">
+          <a id="link" target="_blank" class="button">Check it out!</a>
+        </div>
+      </div>
+    </template>
     <div id="content">
       <h1>My Portfolio</h1>
       <p>
         I'm Ved. I like making stuff! Scroll down to see some things I've made.
       </p>
-      <div>
-        <div class="row">
-          <div class="row-item">
-            <p class="project-description">
-              An interactive programming tutorial site. Solve animated puzzles
-              by executing code in the browser.
-            </p>
-          </div>
-          <div class="row-item">
-            <img class="project-image" src="/images/puzzled.png" />
-          </div>
-          <div class="row-item button-grid">
-            <button class="button-grid-child">Hello World</button>
-          </div>
-        </div>
-      </div>
+      <div></div>
     </div>
+    <script src="script.js"></script>
   </body>
 </html>
