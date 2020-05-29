@@ -32,10 +32,30 @@ content.appendChild(
 );
 
 content.appendChild(
-createRow({
-  description:
-    "Interactive programming tutorial site where users can solve animated puzzles with Javascript.",
-  imageSrc: "/images/puzzled.png",
-  link: "https://programmingforthepuzzled.github.io/puzzled/",
-})
-)
+  createRow({
+    description:
+      "A Typescript compiler-extension/macro that generates validation code to verify types at runtime.",
+    imageSrc: "/images/macro.png",
+    link: "https://github.com/vedantroy/typecheck.macro",
+  })
+);
+
+content.appendChild(
+  createRow({
+    description:
+      "A keyboard that lets users send anime GIFs. (The link is broken because I need to update the privacy policy or something).",
+    imageSrc: "/images/anime-keyboard.png",
+    link:
+      "https://play.google.com/store/apps/details?id=com.vedantroy.animefacekeyboard",
+  })
+);
+
+content.appendChild(
+  createRow({
+    description:
+      "My prior (very out of date) portfolio site ;)",
+    imageSrc: "/images/portfolio.png",
+    link:
+      "https://vedantroy.github.io/",
+  })
+);
