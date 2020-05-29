@@ -76,6 +76,7 @@ p {
 }
 
 .button {
+  text-decoration: none;
   margin: auto;
   cursor: pointer;
   background: var(--oc-teal-6);
