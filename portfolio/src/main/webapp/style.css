@@ -50,7 +50,7 @@ p {
   flex-direction: row;
   align-items: stretch;
   justify-content: space-around;
-  margin-bottom: 15px;
+  margin-bottom: 25px;
 }
 
 .row-item {
