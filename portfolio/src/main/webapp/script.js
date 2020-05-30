@@ -20,7 +20,6 @@ function createRow({ description, imageSrc, link }) {
   clone.getElementById("link").href = link;
   return clone;
 }
-
 const content = document.getElementById("content");
 content.appendChild(
   createRow({
