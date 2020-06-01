@@ -20,17 +20,7 @@ function createRow({ description, imageSrc, link }) {
   clone.getElementById("link").href = link;
   return clone;
 }
-
 const content = document.getElementById("content");
-content.appendChild(
-  createRow({
-    description:
-      "Interactive programming tutorial site where users can solve animated puzzles with Javascript.",
-    imageSrc: "/images/puzzled.png",
-    link: "https://programmingforthepuzzled.github.io/puzzled/",
-  })
-);
-
 content.appendChild(
   createRow({
     description:
@@ -39,7 +29,6 @@ content.appendChild(
     link: "https://github.com/vedantroy/typecheck.macro",
   })
 );
-
 content.appendChild(
   createRow({
     description:
@@ -49,7 +38,6 @@ content.appendChild(
       "https://play.google.com/store/apps/details?id=com.vedantroy.animefacekeyboard",
   })
 );
-
 content.appendChild(
   createRow({
     description:
@@ -59,10 +47,9 @@ content.appendChild(
       "https://vedantroy.github.io/",
   })
 );
-
-
 fetch('/data')
   .then(resp => resp.json())
   .then(text => {
     document.body.append(text)
   })
+
