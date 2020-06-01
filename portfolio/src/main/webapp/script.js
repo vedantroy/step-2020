@@ -20,7 +20,6 @@ function createRow({ description, imageSrc, link }) {
   clone.getElementById("link").href = link;
   return clone;
 }
-
 const content = document.getElementById("content");
 content.appendChild(
   createRow({
@@ -52,10 +51,23 @@ content.appendChild(
 
 content.appendChild(
   createRow({
-    description:
-      "My prior (very out of date) portfolio site ;)",
+    description: "My prior (very out of date) portfolio site ;)",
     imageSrc: "/images/portfolio.png",
-    link:
-      "https://vedantroy.github.io/",
+    link: "https://vedantroy.github.io/",
   })
 );
+
+// We need asyncMain because we can only use "await"
+// inside an async function. Top-level await is not allowed.
+async function asyncMain() {
+  const response = await fetch("/data");
+  const text = await response.text();
+  document.body.append(text);
+}
+
+// we don't need/can't use a 'load' event to wait
+// until the page is loaded because script.js
+// is at the bottom of the "body" tag, so by the time
+// it is executed, the document has already loaded.
+// Thus, we immediately execute the data-fetching code,
+asyncMain();
