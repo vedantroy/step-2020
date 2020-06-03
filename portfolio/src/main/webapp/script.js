@@ -47,9 +47,12 @@ content.appendChild(
       "https://vedantroy.github.io/",
   })
 );
-fetch('/data')
-  .then(resp => resp.json())
-  .then(text => {
-    document.body.append(text)
-  })
-
+fetch("/data")
+  .then((resp) => resp.json())
+  .then((commentsArray) => {
+    for (const comment of commentsArray) {
+      const p = document.createElement("p");
+      p.textContent = comment;
+      document.body.append(p);
+    }
+  });
