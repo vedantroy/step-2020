@@ -24,21 +24,11 @@ const content = document.getElementById("content");
 content.appendChild(
   createRow({
     description:
-      "Interactive programming tutorial site where users can solve animated puzzles with Javascript.",
-    imageSrc: "/images/puzzled.png",
-    link: "https://programmingforthepuzzled.github.io/puzzled/",
-  })
-);
-
-content.appendChild(
-  createRow({
-    description:
       "A Typescript compiler-extension/macro that generates validation code to verify types at runtime.",
     imageSrc: "/images/macro.png",
     link: "https://github.com/vedantroy/typecheck.macro",
   })
 );
-
 content.appendChild(
   createRow({
     description:
@@ -48,26 +38,18 @@ content.appendChild(
       "https://play.google.com/store/apps/details?id=com.vedantroy.animefacekeyboard",
   })
 );
-
 content.appendChild(
   createRow({
-    description: "My prior (very out of date) portfolio site ;)",
+    description:
+      "My prior (very out of date) portfolio site ;)",
     imageSrc: "/images/portfolio.png",
-    link: "https://vedantroy.github.io/",
+    link:
+      "https://vedantroy.github.io/",
   })
 );
+fetch('/data')
+  .then(resp => resp.json())
+  .then(text => {
+    document.body.append(text)
+  })
 
-// We need asyncMain because we can only use "await"
-// inside an async function. Top-level await is not allowed.
-async function asyncMain() {
-  const response = await fetch("/data");
-  const text = await response.text();
-  document.body.append(text);
-}
-
-// we don't need/can't use a 'load' event to wait
-// until the page is loaded because script.js
-// is at the bottom of the "body" tag, so by the time
-// it is executed, the document has already loaded.
-// Thus, we immediately execute the data-fetching code,
-asyncMain();
