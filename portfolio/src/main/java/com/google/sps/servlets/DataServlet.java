@@ -35,7 +35,6 @@ import com.google.gson.Gson;
 public class DataServlet extends HttpServlet {
 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private final ArrayList<String> comments = new ArrayList<>();
 
   public DataServlet() {
     super();
@@ -62,6 +61,6 @@ public class DataServlet extends HttpServlet {
       comments.add((String)entity.getProperty("value"));
     }
     response.setContentType("application/json;");
-    response.getWriter().println((new Gson()).toJson(comments));
+    response.getWriter().println(new Gson().toJson(comments));
   }
 }
