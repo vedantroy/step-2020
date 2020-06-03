@@ -40,11 +40,9 @@ content.appendChild(
 );
 content.appendChild(
   createRow({
-    description:
-      "My prior (very out of date) portfolio site ;)",
+    description: "My prior (very out of date) portfolio site ;)",
     imageSrc: "/images/portfolio.png",
-    link:
-      "https://vedantroy.github.io/",
+    link: "https://vedantroy.github.io/",
   })
 );
 fetch("/data")
