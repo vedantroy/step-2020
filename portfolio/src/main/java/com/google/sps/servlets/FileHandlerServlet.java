@@ -45,47 +45,44 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/files")
 public class FileHandlerServlet extends HttpServlet {
 
-private static final String CONTENT_TYPE_JSON = "application/json;";
-private static final String KEY_IMAGE_BLOBKEY = "blobKey";
-private static final String KEY_IMAGE_URL = "url";
-private static final String KIND_IMAGE = "image";
-private static final String PATH_HOME_PAGE = "/index.html";
-private final BlobstoreService blobService = BlobstoreServiceFactory.getBlobstoreService();
-private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private static final String CONTENT_TYPE_JSON = "application/json;";
+  private static final String KEY_IMAGE_BLOBKEY = "blobKey";
+  private static final String KEY_IMAGE_URL = "url";
+  private static final String KIND_IMAGE = "image";
+  private static final String PATH_HOME_PAGE = "/index.html";
+  private final BlobstoreService blobService = BlobstoreServiceFactory.getBlobstoreService();
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-@Override
-protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-  List<Entity> files = datastore.prepare(new Query(KIND_IMAGE)).asList(FetchOptions.Builder.withDefaults());
-  String[] urls = files
-                    .stream()
-                    .map(e -> e.getProperty(KEY_IMAGE_URL))
-                    .toArray(String[]::new);
-  resp.setContentType(CONTENT_TYPE_JSON);
-  resp.getWriter().println(new Gson().toJson(urls));
-}
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    List<Entity> files = datastore.prepare(new Query(KIND_IMAGE)).asList(FetchOptions.Builder.withDefaults());
+    String[] urls = files.stream().map(e -> e.getProperty(KEY_IMAGE_URL)).toArray(String[]::new);
+    resp.setContentType(CONTENT_TYPE_JSON);
+    resp.getWriter().println(new Gson().toJson(urls));
+  }
 
- @Override
- protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-     Map<String, List<BlobKey>> blobs = blobService.getUploads(req);
-     List<BlobKey> blobKeys = blobs.get(KIND_IMAGE);
+  @Override
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    Map<String, List<BlobKey>> blobs = blobService.getUploads(req);
+    List<BlobKey> blobKeys = blobs.get(KIND_IMAGE);
 
-     if (blobKeys == null || blobKeys.isEmpty()) {
-         // the user didn't upload a file, do nothing
-         resp.sendRedirect(PATH_HOME_PAGE);
-         return;
-     }
+    if (blobKeys == null || blobKeys.isEmpty()) {
+      // the user didn't upload a file, do nothing
+      resp.sendRedirect(PATH_HOME_PAGE);
+      return;
+    }
 
-     // The form only contains a single file input
-     BlobKey blobKey = blobKeys.get(0);
+    // The form only contains a single file input
+    BlobKey blobKey = blobKeys.get(0);
 
-     BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
-     if (blobInfo.getSize() == 0) {
-         // the user didn't upload a file, cleanup
-         blobService.delete(blobKey);
-         resp.sendRedirect(PATH_HOME_PAGE);
-         return;
-     }
-     
+    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+    if (blobInfo.getSize() == 0) {
+      // the user didn't upload a file, cleanup
+      blobService.delete(blobKey);
+      resp.sendRedirect(PATH_HOME_PAGE);
+      return;
+    }
+
     ImagesService imagesService = ImagesServiceFactory.getImagesService();
     ServingUrlOptions opts = ServingUrlOptions.Builder.withBlobKey(blobKey);
 
@@ -102,5 +99,5 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
     imageUploadEntity.setProperty(KEY_IMAGE_BLOBKEY, blobKey);
     datastore.put(imageUploadEntity);
     resp.sendRedirect(PATH_HOME_PAGE);
- }
+  }
 }
