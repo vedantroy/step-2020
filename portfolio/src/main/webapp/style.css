@@ -89,3 +89,28 @@ p {
   justify-content: center;
   border-radius: 2px;
 }
+
+.bottom-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.comments-section {
+  margin-right: 200px;
+  margin-left: 100px;
+}
+
+.hidden {
+  display: none;
+}
+
+.uploaded-images {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+}
+
+.image {
+  height: 100px;
+  width: 100px;
+}
