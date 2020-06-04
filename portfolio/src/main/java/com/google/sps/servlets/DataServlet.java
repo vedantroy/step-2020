@@ -37,12 +37,12 @@ import com.google.gson.Gson;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private static final String JSON_CONTENT_TYPE = "application/json;";
-  private static final String HOME_PAGE_PATH = "/index.html";
+  private static final String CONTENT_TYPE_JSON = "application/json;";
+  private static final String PATH_HOME_PAGE = "/index.html";
   private static final int DEFAULT_MAX_COMMENTS = 5;
-  private static final String MAX_COMMENTS_PARAM = "max_comments";
-  private static final String COMMENT_VALUE_KEY = "value";
-  private static final String COMMENT_KIND = "comment";
+  private static final String PARAM_MAX_COMMENTS = "max_comments";
+  private static final String KEY_COMMENT_VALUE = "value";
+  private static final String KIND_COMMENT = "comment";
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   public DataServlet() {
@@ -51,32 +51,32 @@ public class DataServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String comment = req.getParameter(COMMENT_KIND);
+    String comment = req.getParameter(KIND_COMMENT);
     if (comment != null && !comment.equals("")) {
       // do nothing if the comment field is empty
-      Entity commentEntity = new Entity(COMMENT_KIND);
-      commentEntity.setProperty(COMMENT_VALUE_KEY, comment);
+      Entity commentEntity = new Entity(KIND_COMMENT);
+      commentEntity.setProperty(KEY_COMMENT_VALUE, comment);
       datastore.put(commentEntity);
     }
-    resp.sendRedirect(HOME_PAGE_PATH);
+    resp.sendRedirect(PATH_HOME_PAGE);
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String maxCommentsString = request.getParameter(MAX_COMMENTS_PARAM);
-    Integer maxComments = null;
+    String maxCommentsString = request.getParameter(PARAM_MAX_COMMENTS);
+    int maxComments = DEFAULT_MAX_COMMENTS;
     try {
       maxComments = Integer.parseInt(maxCommentsString);
     } catch (NumberFormatException e) {
-      maxComments = DEFAULT_MAX_COMMENTS;
+      System.err.println("Could not convert: " + maxCommentsString + " to integer");
     }
-    Query query = new Query(COMMENT_KIND);
+    Query query = new Query(KIND_COMMENT);
     List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
     String[] comments = results
                            .stream()
-                           .map(e -> e.getProperty(COMMENT_VALUE_KEY))
+                           .map(e -> e.getProperty(KEY_COMMENT_VALUE))
                            .toArray(String[]::new);
-    response.setContentType(JSON_CONTENT_TYPE);
+    response.setContentType(CONTENT_TYPE_JSON);
     response.getWriter().println(new Gson().toJson(comments));
     response.setStatus(200);
   }
