@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -36,7 +37,7 @@ import com.google.gson.Gson;
 public class DataServlet extends HttpServlet {
 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private final String COMMENT_TAG = "comment";
+  private static final String COMMENT_KIND = "comment";
 
   public DataServlet() {
     super();
@@ -44,10 +45,10 @@ public class DataServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String comment = req.getParameter(COMMENT_TAG);
+    String comment = req.getParameter(COMMENT_KIND);
     if (comment != null && !comment.equals("")) {
       // do nothing if the comment field is empty
-      Entity commentEntity = new Entity(COMMENT_TAG);
+      Entity commentEntity = new Entity(COMMENT_KIND);
       commentEntity.setProperty("value", comment);
       datastore.put(commentEntity);
     }
@@ -59,16 +60,15 @@ public class DataServlet extends HttpServlet {
     String maxCommentsString = request.getParameter("max_comments");
     if (maxCommentsString != null) {
       Integer maxComments = Integer.parseInt(maxCommentsString);
-      Query query = new Query(COMMENT_TAG);
-      PreparedQuery results = datastore.prepare(query);
-      ArrayList<String> comments = new ArrayList<>();
-      int i = 0;
-      for (Entity entity : results.asIterable()) {
-        if (i++ == maxComments) break;
-        comments.add((String)entity.getProperty("value"));
-      }
+      Query query = new Query(COMMENT_KIND);
+      List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
+      String[] comments = results
+                             .stream()
+                             .map(e -> e.getProperty("value"))
+                             .toArray(String[]::new);
       response.setContentType("application/json;");
       response.getWriter().println(new Gson().toJson(comments));
+      response.setStatus(200);
     } else {
       response.sendError(400);
     }
