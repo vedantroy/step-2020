@@ -78,3 +78,18 @@ async function getComments(numComments) {
 }
 
 getComments(maxComments);
+
+async function getUploadedFiles() {
+  const resp = await fetch("/files");
+  const urls = await resp.json();
+  const uploadedImagesContainer = document.getElementById("uploaded-images");
+  console.log(urls);
+  for (const url of urls) {
+    const img = document.createElement("img");
+    img.src = url;
+    img.classList.add("image");
+    uploadedImagesContainer.appendChild(img);
+  }
+}
+
+getUploadedFiles();
