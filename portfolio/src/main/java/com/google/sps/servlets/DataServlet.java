@@ -68,7 +68,7 @@ public class DataServlet extends HttpServlet {
     try {
       maxComments = Integer.parseInt(maxCommentsString);
     } catch (NumberFormatException e) {
-      System.err.println("Could not convert: " + maxCommentsString + " to integer");
+      System.err.print(e);
     }
     Query query = new Query(KIND_COMMENT);
     List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
