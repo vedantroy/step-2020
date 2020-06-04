@@ -51,9 +51,9 @@ const form = document.getElementById("max-comments-form");
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const data = new FormData(form);
-  const newMaxComments = data.get("max-comments");
-  if (newMaxComments !== maxComments) {
-    maxComments = newMaxComments;
+  const newMaxComments = parseInt(data.get("max-comments"));
+  if (newMaxComments !== maxComments && newMaxComments !== NaN) {
+    maxComments = parseInt(newMaxComments);
     getComments(maxComments);
   }
 });
