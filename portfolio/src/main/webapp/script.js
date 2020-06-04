@@ -51,14 +51,10 @@ const form = document.getElementById("max-comments-form");
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const data = new FormData(form);
-  for (const [key, val] of data) {
-    if (key === "max-comments") {
-      const newVal = parseInt(val);
-      if (newVal !== maxComments) {
-        maxComments = newVal;
-        getComments(maxComments);
-      }
-    }
+  const newMaxComments = data.get("max-comments");
+  if (newMaxComments !== maxComments) {
+    maxComments = newMaxComments;
+    getComments(maxComments);
   }
 });
 
