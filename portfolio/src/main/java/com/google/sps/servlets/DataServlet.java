@@ -30,14 +30,20 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.files.FileServicePb.FileContentType.ContentType;
 import com.google.gson.Gson;
 
 /** Servlet that returns some example content.*/
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private static final String JSON_CONTENT_TYPE = "application/json;";
+  private static final String HOME_PAGE_PATH = "/index.html";
+  private static final int DEFAULT_MAX_COMMENTS = 5;
+  private static final String MAX_COMMENTS_PARAM = "max_comments";
+  private static final String COMMENT_VALUE_KEY = "value";
   private static final String COMMENT_KIND = "comment";
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   public DataServlet() {
     super();
@@ -49,28 +55,29 @@ public class DataServlet extends HttpServlet {
     if (comment != null && !comment.equals("")) {
       // do nothing if the comment field is empty
       Entity commentEntity = new Entity(COMMENT_KIND);
-      commentEntity.setProperty("value", comment);
+      commentEntity.setProperty(COMMENT_VALUE_KEY, comment);
       datastore.put(commentEntity);
     }
-    resp.sendRedirect("/index.html");
+    resp.sendRedirect(HOME_PAGE_PATH);
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String maxCommentsString = request.getParameter("max_comments");
-    if (maxCommentsString != null) {
-      Integer maxComments = Integer.parseInt(maxCommentsString);
-      Query query = new Query(COMMENT_KIND);
-      List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
-      String[] comments = results
-                             .stream()
-                             .map(e -> e.getProperty("value"))
-                             .toArray(String[]::new);
-      response.setContentType("application/json;");
-      response.getWriter().println(new Gson().toJson(comments));
-      response.setStatus(200);
-    } else {
-      response.sendError(400);
+    String maxCommentsString = request.getParameter(MAX_COMMENTS_PARAM);
+    Integer maxComments = null;
+    try {
+      maxComments = Integer.parseInt(maxCommentsString);
+    } catch (NumberFormatException e) {
+      maxComments = DEFAULT_MAX_COMMENTS;
     }
+    Query query = new Query(COMMENT_KIND);
+    List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
+    String[] comments = results
+                           .stream()
+                           .map(e -> e.getProperty(COMMENT_VALUE_KEY))
+                           .toArray(String[]::new);
+    response.setContentType(JSON_CONTENT_TYPE);
+    response.getWriter().println(new Gson().toJson(comments));
+    response.setStatus(200);
   }
 }
