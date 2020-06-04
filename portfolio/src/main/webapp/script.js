@@ -56,19 +56,21 @@ form.addEventListener("submit", (e) => {
       const newVal = parseInt(val);
       if (newVal !== maxComments) {
         maxComments = newVal;
-        getComments();
+        getComments(maxComments);
       }
     }
   }
 });
 
-document.getElementById('delete-comments').addEventListener('click', async (_) => {
-  await fetch(`delete-data`, {method: 'POST'})
-  getComments()
-})
+document
+  .getElementById("delete-comments")
+  .addEventListener("click", async (_) => {
+    await fetch(`delete-data`, { method: "POST" });
+    getComments();
+  });
 
-async function getComments() {
-  const resp = await fetch(`data?max_comments=${maxComments}`);
+async function getComments(numComments) {
+  const resp = await fetch(`data?max_comments=${numComments}`);
   const commentsArray = await resp.json();
   const commentsDiv = document.getElementById("comments");
   commentsDiv.innerHTML = "";
@@ -79,4 +81,4 @@ async function getComments() {
   }
 }
 
-getComments()
+getComments(maxComments);
