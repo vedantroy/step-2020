@@ -45,12 +45,38 @@ content.appendChild(
     link: "https://vedantroy.github.io/",
   })
 );
-fetch("/data")
-  .then((resp) => resp.json())
-  .then((commentsArray) => {
-    for (const comment of commentsArray) {
-      const p = document.createElement("p");
-      p.textContent = comment;
-      document.body.append(p);
+
+let maxComments = 3;
+const form = document.getElementById("max-comments-form");
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const data = new FormData(form);
+  for (const [key, val] of data) {
+    if (key === "max-comments") {
+      const newVal = parseInt(val);
+      if (newVal !== maxComments) {
+        maxComments = newVal;
+        getComments();
+      }
     }
-  });
+  }
+});
+
+document.getElementById('delete-comments').addEventListener('click', async (_) => {
+  await fetch(`delete-data`, {method: 'POST'})
+  getComments()
+})
+
+async function getComments() {
+  const resp = await fetch(`data?max_comments=${maxComments}`);
+  const commentsArray = await resp.json();
+  const commentsDiv = document.getElementById("comments");
+  commentsDiv.innerHTML = "";
+  for (const comment of commentsArray) {
+    const p = document.createElement("li");
+    p.textContent = comment;
+    commentsDiv.appendChild(p);
+  }
+}
+
+getComments()
