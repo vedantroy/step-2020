@@ -74,6 +74,10 @@ public class FileHandlerServlet extends HttpServlet {
 
     // The form only contains a single file input
     BlobKey blobKey = blobKeys.get(0);
+    for (int i = 1; i < blobKeys.size(); ++i) {
+      BlobKey k = blobKeys.get(i);
+      blobService.delete(k);
+    }
 
     BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
     if (blobInfo.getSize() == 0) {
