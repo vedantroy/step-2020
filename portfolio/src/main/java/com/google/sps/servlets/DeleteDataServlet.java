@@ -26,51 +26,27 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.gson.Gson;
 
 /** Servlet that returns some example content.*/
-@WebServlet("/data")
-public class DataServlet extends HttpServlet {
+@WebServlet("/delete-data")
+public class DeleteDataServlet extends HttpServlet {
 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private final String COMMENT_TAG = "comment";
 
-  public DataServlet() {
+  public DeleteDataServlet() {
     super();
   }
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String comment = req.getParameter(COMMENT_TAG);
-    if (comment != null && !comment.equals("")) {
-      // do nothing if the comment field is empty
-      Entity commentEntity = new Entity(COMMENT_TAG);
-      commentEntity.setProperty("value", comment);
-      datastore.put(commentEntity);
-    }
-    resp.sendRedirect("/index.html");
-  }
-
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String maxCommentsString = request.getParameter("max_comments");
-    if (maxCommentsString != null) {
-      Integer maxComments = Integer.parseInt(maxCommentsString);
-      Query query = new Query(COMMENT_TAG);
+      Query query = new Query("comment");
       PreparedQuery results = datastore.prepare(query);
-      ArrayList<String> comments = new ArrayList<>();
-      int i = 0;
       for (Entity entity : results.asIterable()) {
-        if (i++ == maxComments) break;
-        comments.add((String)entity.getProperty("value"));
+        Key k = entity.getKey();
+        datastore.delete(k);
       }
-      response.setContentType("application/json;");
-      response.getWriter().println(new Gson().toJson(comments));
-    } else {
-      response.sendError(400);
-    }
   }
 }
