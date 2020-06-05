@@ -95,3 +95,30 @@ async function initFileUpload() {
 }
 
 initFileUpload();
+
+google.charts.load("current", { packages: ["corechart"] });
+google.charts.setOnLoadCallback(drawChart);
+
+async function drawChart() {
+  const chart = new google.visualization.DataTable();
+  const data = await fetch("/population-data");
+  const json = await data.json();
+  console.log(json);
+  chart.addColumn("string", "Year");
+  chart.addColumn("number", "Population");
+  for (let i = json.length - 1; i > 0; i--) {
+    const entry = json[i];
+    const year = entry.date;
+    const population = parseInt(entry.value);
+    chart.addRow([year, population]);
+  }
+  const options = {
+    title: "US Population Per Year",
+    width: 500,
+    height: 500,
+  };
+  const chartElement = new google.visualization.LineChart(
+    document.getElementById("chart")
+  );
+  chartElement.draw(chart, options);
+}
