@@ -71,24 +71,27 @@ async function getComments(numComments) {
   const commentsDiv = document.getElementById("comments");
   commentsDiv.innerHTML = "";
   for (const comment of commentsArray) {
-    const p = document.createElement("li");
-    p.textContent = comment;
+    const { text, url } = comment;
+    const p = document.createElement("p");
+    p.textContent = text;
     commentsDiv.appendChild(p);
+    if (url != null) {
+      const img = document.createElement("img");
+      img.src = url;
+      img.classList.add("image");
+      commentsDiv.appendChild(img);
+    }
   }
 }
 
 getComments(maxComments);
 
-async function getUploadedFiles() {
-  const resp = await fetch("/files");
-  const urls = await resp.json();
-  const uploadedImagesContainer = document.getElementById("uploaded-images");
-  for (const url of urls) {
-    const img = document.createElement("img");
-    img.src = url;
-    img.classList.add("image");
-    uploadedImagesContainer.appendChild(img);
-  }
+async function initFileUpload() {
+  const resp = await fetch("/blobstore-upload-url");
+  const url = await resp.text();
+  const submitCommentForm = document.getElementById("submit-comment-form");
+  submitCommentForm.action = url;
+  submitCommentForm.classList.remove("hidden");
 }
 
-getUploadedFiles();
+initFileUpload();
