@@ -23,6 +23,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -33,6 +36,9 @@ import com.google.appengine.api.datastore.Query;
 @WebServlet("/delete-data")
 public class DeleteDataServlet extends HttpServlet {
 
+  private static final String KEY_COMMENT_BLOB_KEY = "blobKey";
+  private static final String KIND_FILE_COMMENT = "comment";
+  private final BlobstoreService blobService = BlobstoreServiceFactory.getBlobstoreService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   public DeleteDataServlet() {
@@ -41,11 +47,15 @@ public class DeleteDataServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-      Query query = new Query("comment");
+      Query query = new Query(KIND_FILE_COMMENT);
       PreparedQuery results = datastore.prepare(query);
       for (Entity entity : results.asIterable()) {
-        Key k = entity.getKey();
-        datastore.delete(k);
+        Key entityKey = entity.getKey();
+        BlobKey blobKey = (BlobKey) entity.getProperty(KEY_COMMENT_BLOB_KEY);
+        if (blobKey != null) {
+          blobService.delete(blobKey);
+        }
+        datastore.delete(entityKey);
       }
   }
 }
