@@ -41,12 +41,9 @@ public final class FindMeetingQuery {
   }
 
   public Collection<TimeRange> getTimeRanges(Collection<Event> events, Collection<String> attendees, long duration) {
-    Comparator<Event> comparator = new Comparator<Event>() {
-      @Override
-      public int compare(final Event e1, final Event e2) {
+    Comparator<Event> comparator = (Event e1, Event e2) -> {
         return TimeRange.ORDER_BY_START.compare(e1.getWhen(), e2.getWhen());
-      }
-    };
+    };     
     /**
      * All attendees are treated as mandatory.
      * Events are sorted in chronological order with respect to start times.
@@ -60,10 +57,7 @@ public final class FindMeetingQuery {
     Collection<TimeRange> ranges = new ArrayList<TimeRange>();
     int start = TimeRange.START_OF_DAY;
     for (Event e : l) {
-      Set<String> eventAttendees = e.getAttendees();
-      Set<String> copy = new HashSet<>(eventAttendees);
-      copy.retainAll(attendees);
-      if (copy.size() > 0) {
+      if (!Collections.disjoint(e.getAttendees(), attendees)) {
         int end = e.getWhen().start();
         if (end - start >= duration) {
           ranges.add(TimeRange.fromStartEnd(start, end, false));
