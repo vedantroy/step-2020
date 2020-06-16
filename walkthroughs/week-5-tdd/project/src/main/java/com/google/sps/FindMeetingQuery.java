@@ -34,13 +34,10 @@ public final class FindMeetingQuery {
     allAttendees.addAll(optionalAttendees);
     
     Collection<TimeRange> ranges = getTimeRanges(events, allAttendees, request.getDuration());
-    if (ranges.size() > 0) {
-      return ranges;
+    if (ranges.size() == 0 && mandatoryAttendees.size() > 0) {
+      ranges = getTimeRanges(events, mandatoryAttendees, request.getDuration());
     }
-    if (mandatoryAttendees.size() > 0) {
-      return getTimeRanges(events, mandatoryAttendees, request.getDuration());
-    }
-    return Arrays.asList();
+    return ranges;
   }
 
   public Collection<TimeRange> getTimeRanges(Collection<Event> events, Collection<String> attendees, long duration) {
@@ -50,6 +47,13 @@ public final class FindMeetingQuery {
         return TimeRange.ORDER_BY_START.compare(e1.getWhen(), e2.getWhen());
       }
     };
+    /**
+     * All attendees are treated as mandatory.
+     * Events are sorted in chronological order with respect to start times.
+     * When a new event is encountered, check if there is an overlap with the meeting
+     * attendees. If so, add a meeting timespan from the current start to the start of this
+     * event if it is a valid length of time. Then set the current start to end of this event.
+     */
     boolean rejectedEvent = false;
     List<Event> l = new ArrayList(events);
     Collections.sort(l, comparator);
@@ -68,10 +72,19 @@ public final class FindMeetingQuery {
         }
         int potentialNewStart = e.getWhen().end();
         if (potentialNewStart > start) {
+          // Only set the current start to the end of the event, if this
+          // event is not a nested event. Example:
+          // |---A---|
+          //  |-B-|
+          // It would be bad to set the current start to
+          // the end of B, because then we would schedule a timespan
+          // while event A is still occurring.
           start = potentialNewStart;
         }
       }     
     }
+    // Add the final available timespan (after the last event and before the end of the day)
+    // if it is valid.
     if (TimeRange.END_OF_DAY - start >= duration && (start != TimeRange.START_OF_DAY || !rejectedEvent)) {
       ranges.add(TimeRange.fromStartEnd(start, TimeRange.END_OF_DAY, true));
     }
