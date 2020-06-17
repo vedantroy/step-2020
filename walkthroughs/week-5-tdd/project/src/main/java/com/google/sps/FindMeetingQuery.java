@@ -52,11 +52,11 @@ public final class FindMeetingQuery {
      * event if it is a valid length of time. Then set the current start to end of this event.
      */
     boolean rejectedEvent = false;
-    List<Event> l = new ArrayList(events);
-    Collections.sort(l, comparator);
+    List<Event> sortedEvents = new ArrayList(events);
+    Collections.sort(sortedEvents, comparator);
     Collection<TimeRange> ranges = new ArrayList<TimeRange>();
     int start = TimeRange.START_OF_DAY;
-    for (Event e : l) {
+    for (Event e : sortedEvents) {
       if (!Collections.disjoint(e.getAttendees(), attendees)) {
         int end = e.getWhen().start();
         if (end - start >= duration) {
